@@ -1,0 +1,52 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": [
+    "src/renderer/src/env.d.ts",
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.tsx",
+    "src/preload/*.d.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@renderer/*": [
+        "src/renderer/src/*"
+      ],
+      "@models/*": [
+        "src/renderer/src/models/*"
+      ],
+      "@pages/*": [
+        "src/renderer/src/pages/*"
+      ],
+      "@routers/*": [
+        "src/renderer/src/routers/*"
+      ],
+      "@layouts/*": [
+        "src/renderer/src/layouts/*"
+      ],
+      "@controllers/*": [
+        "src/renderer/src/controllers/*"
+      ],
+      "@services/*": [
+        "src/renderer/src/services/*"
+      ],
+      "@assets/*": [
+        "src/renderer/src/assets/*"
+      ],
+      "@config/*": [
+        "src/renderer/src/config/*"
+      ],
+      "@hooks/*": [
+        "src/renderer/src/hooks/*"
+      ],
+      "@store/*": [
+        "src/renderer/src/store/*"
+      ],
+      "@/Components/*": [
+        "src/renderer/src/components/*"
+      ],
+    }
+  }
+}

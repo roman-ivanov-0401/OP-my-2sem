@@ -1,0 +1,20 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+    > .containerElement{
+        flex-basis: 45%;
+    }
+    > .imageContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        > .image{
+ 
+        }
+    }
+    > .info{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
