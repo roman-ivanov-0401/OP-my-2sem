@@ -2,7 +2,7 @@ import { IProduct, ProdictId } from "../../models/product"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { mockProducts } from "../../pages/User/Catalog/catalog.mock"
 
-interface PledgeState{
+export interface CatalogState{
     products: IProduct[]
 }
 
@@ -11,12 +11,12 @@ interface EditPayload{
     newProduct: IProduct
 }
 
-const initialState: PledgeState = {
+const initialState: CatalogState = {
     products: mockProducts
 }
 
-export const authSlice = createSlice({
-    name: "pledge",
+export const catalogSlice = createSlice({
+    name: "catalog",
     initialState,
     reducers: {
         setProducts(state, action: PayloadAction<IProduct[]>){
@@ -35,4 +35,4 @@ export const authSlice = createSlice({
     }
 })
 
-export default authSlice.reducer;
+export default catalogSlice.reducer;

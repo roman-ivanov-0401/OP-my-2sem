@@ -6,4 +6,5 @@ export interface IPledgedProduct{
     price: number;
     description: string;
     image: string;
+    quantity: number;
 }

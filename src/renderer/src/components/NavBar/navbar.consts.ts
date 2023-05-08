@@ -38,9 +38,5 @@ export const adminPoints: NavBarPointProps[] = [
     {
         name: "Товары",
         path: "/products"
-    },
-    {
-        name: "Залоги",
-        path: "/pledges"
     }
 ]

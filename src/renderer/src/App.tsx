@@ -10,8 +10,8 @@ import { Roles } from "./models/user";
 
 const App: FC = () => {
     const { user } = useAppSelector(state => state.authReducer)
-    if(!user.role.includes(Roles.USER)) return <UnauthorizedRouter />
-    if(user.role.includes(Roles.ADMIN)) return <AdminRouter/>
+    if(!user.roles.includes(Roles.USER)) return <UnauthorizedRouter />
+    if(user.roles.includes(Roles.ADMIN)) return <AdminRouter/>
     return <UserRouter />
 };
 

@@ -1,11 +1,16 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { FC } from "react";
+import {FC} from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAppDispatch } from "../../../hooks/redux";
 import { authSlice } from "../../../store/sliсes/authSlice"
 
 import { RegisterFormFields } from "./register.types"
 import { Roles } from "@renderer/models/user";
+import {cartSlice} from "../../../store/sliсes/cartSlice";
+import {ICart} from "../../../models/cart";
+import {IPledge} from "../../../models/pledge";
+import {IUser} from "../../../models/user";
+import {pledgeSlice} from "../../../store/sliсes/pledgeSlice";
 
 const Register: FC = () => {
     const dispatch = useAppDispatch()
@@ -13,28 +18,47 @@ const Register: FC = () => {
         mode: "onChange"
     });
     const onSublit: SubmitHandler<RegisterFormFields> = ({email, login, password}) => {
-        dispatch(
-            authSlice.actions.setUser({
-                _id: "",
-                balance: 4500,
-                basket: "",
-                email,
-                login,
-                password,
-                predges: "",
-                role: [Roles.USER]
-            })
-        )
+      const newCart: ICart = {
+        _id: `${Math.random() * 1000}`,
+        products: []
+      }
+
+      dispatch(cartSlice.actions.addCart(newCart))
+
+      const newPledge: IPledge = {
+        _id: `${Math.random() * 1000}`,
+        products: [],
+        dataOut: new Date().toString(),
+        dateIn: new Date().toString()
+      }
+
+      dispatch(pledgeSlice.actions.addPledge(newPledge))
+
+      const newUser: IUser = {
+        _id: `${Math.random() * 1000}`,
+        password,
+        login,
+        roles: [Roles.USER],
+        email,
+        basket: newCart._id,
+        balance: 0,
+        pledge: newPledge._id
+      }
+
+      dispatch(authSlice.actions.addUser(newUser))
+      dispatch(authSlice.actions.setUser(newUser))
     }
 
+
+
     return (
-        <Box 
+        <Box
             component={"form"}
             noValidate
             autoComplete="off"
             onSubmit={handleSubmit(onSublit)}
         >
-            <Container 
+            <Container
             sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -44,11 +68,13 @@ const Register: FC = () => {
             }}
             maxWidth="sm"
             >
-                <Typography 
+                <Typography
                     variant="h1"
                      mb={3}
                      textAlign={"center"}
                      >Регистрация</Typography>
+
+
                 <TextField
                     required
                     label="Почта"
@@ -102,6 +128,7 @@ const Register: FC = () => {
                         Зарегистрироваться
                     </Button>
                 </Container>
+
             </Container>
         </Box>
     );

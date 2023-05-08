@@ -1,39 +1,40 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { FC } from "react"
+import {FC, useState} from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
-import { useAppDispatch } from "../../../hooks/redux"
+import {useAppDispatch, useAppSelector} from "../../../hooks/redux"
 import { authSlice } from "../../../store/sliсes/authSlice"
 import { LoginFormFields } from "./login.types"
-import { Roles } from "@renderer/models/user";
+import {useNavigate} from "react-router-dom";
 
 const LogIn: FC = () => {
+    const [isCredentialsCorrect, setIsCredentialsCorrect] = useState<boolean>(true)
+
     const dispatch = useAppDispatch();
     const { register, handleSubmit, formState: { errors } }  = useForm<LoginFormFields>({
         mode: "onChange"
     });
+    const userList = useAppSelector(state => state.authReducer.users)
+    const router = useNavigate();
+
     const onSubmit: SubmitHandler<LoginFormFields> = ({ email, password }) => {
-        dispatch(
-            authSlice.actions.setUser({
-                _id: "",
-                balance: 4500,
-                basket: "",
-                email: email,
-                login: "userLogin",
-                password: password,
-                predges: "",
-                role: [Roles.USER]
-            })
-        )
+        const foundUser = userList.find(user => user.email == email && user.password == password)
+        if(foundUser){
+          dispatch(authSlice.actions.setUser(foundUser))
+          router("/catalog")
+        }
+        else{
+          setIsCredentialsCorrect(false)
+        }
     };
 
     return (
-        <Box 
+        <Box
             component={"form"}
             noValidate
             autoComplete="off"
             onSubmit={handleSubmit(onSubmit)}
         >
-            <Container 
+            <Container
             sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -43,7 +44,7 @@ const LogIn: FC = () => {
             }}
             maxWidth="sm"
             >
-                <Typography 
+                <Typography
                     variant="h1"
                      mb={3}
                      textAlign={"center"}
@@ -88,6 +89,12 @@ const LogIn: FC = () => {
                         Войти
                     </Button>
                 </Container>
+              {
+                !isCredentialsCorrect &&
+                <Typography>
+                  Пользователь не существует или введён неверный пароль
+                </Typography>
+              }
             </Container>
         </Box>
     );

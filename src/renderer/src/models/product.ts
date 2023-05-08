@@ -6,4 +6,5 @@ export interface IProduct{
     price: number;
     description: string;
     image: string;
+    quantity: number;
 }

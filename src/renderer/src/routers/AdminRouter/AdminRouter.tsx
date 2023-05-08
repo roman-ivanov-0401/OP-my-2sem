@@ -4,8 +4,9 @@ import { AdminRouterProps } from "./adminRouter.types"
 import { AdminLayout } from "../../layouts/AdminLayout"
 import { UserManagmentPage } from "@renderer/pages/Admin/UserManagment"
 import { ProductManagmentPage } from "@renderer/pages/Admin/ProductManagment"
-import { PredgeManagmentPage } from "@renderer/pages/Admin/PredgeManagment"
+import { PledgeManagmentPage } from "@renderer/pages/Admin/PredgeManagment"
 import { ProfilePage } from "@renderer/pages/User/Profile"
+import { PledgeByIdManagment } from "@renderer/pages/Admin/PledgeByIdManagment"
 
 const AdminRouter: FC<AdminRouterProps> = () => {
     return(
@@ -14,7 +15,8 @@ const AdminRouter: FC<AdminRouterProps> = () => {
                 <Route index element={<UserManagmentPage/>}/>
                 <Route path="users" element={<UserManagmentPage/>}/>
                 <Route path="products" element={<ProductManagmentPage/>}/>
-                <Route path="predges" element={<PredgeManagmentPage/>}/>
+                <Route path="pledges" element={<PledgeManagmentPage/>}/>
+                <Route path="pledges/:id" element={<PledgeByIdManagment/>}/>
                 <Route path="profile" element={<ProfilePage/>}/>
                 <Route path="*" element={<UserManagmentPage/>}/>
             </Route>

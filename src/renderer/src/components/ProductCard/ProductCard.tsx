@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { ProductCartProps } from "./productCard.types";
 import {
     Box,
@@ -10,46 +10,60 @@ import {
     CardMedia,
     Typography
 } from "@mui/material";
-import {
-    Add,
-    Remove
-} from "@mui/icons-material"
-import { useNavigate } from "react-router-dom"
+import { Add, Remove } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { cartSlice } from "../../store/sliсes/cartSlice"
+import { cartSlice } from "../../store/sliсes/cartSlice";
 
 const ProductCard: FC<ProductCartProps> = ({ product }) => {
     const navigation = useNavigate();
-    const cart = useAppSelector(state => state.cartReducer.cart);
-    const cartProduct = cart.products.filter(({ product: { _id } }) => _id == product._id);
-    const isBought = Boolean(cartProduct.length);
-    const dispatch = useAppDispatch();
-    
-    const onClickHandler = (): void => {
-        navigation(`product/${product._id}`)
+    const user = useAppSelector(state => state.authReducer.user);
+    const productInCart = useAppSelector(state => state.cartReducer.carts.find(({ _id }) => _id == user.basket)?.products.find(({ _id }) => _id == product._id))
+    const isBought = Boolean(productInCart)
+    let canIncrement = false
+    if(productInCart){
+        canIncrement = productInCart?.quantity < product.quantity
     }
+    const dispatch = useAppDispatch();
+
+    const onClickHandler = (): void => {
+        navigation(`product/${product._id}`);
+    };
 
     const addToCartHandler = (): void => {
-        dispatch(cartSlice.actions.addProduct(
-            {
-                quantity: 1,
-                product
+        dispatch(cartSlice.actions.addProductToCart({
+            cartId: user.basket,
+            product: {
+                _id: product._id,
+                description: product.description,
+                image: product.image,
+                name: product.name,
+                price: product.price,
+                quantity: 1
             }
-        ));
-        //setIsBought(prev => !prev);
-    }
+        }))
+    };
 
     const removeFromCartHandler = (): void => {
-        dispatch(cartSlice.actions.deleteProduct(product._id));
-    }
+        dispatch(cartSlice.actions.deleteProductInCart({
+            cartId: user.basket,
+            productId: product._id
+        }))
+    };
 
     const incrementHandle = (): void => {
-        dispatch(cartSlice.actions.incrementQuantity(product._id))
-    }
+        dispatch(cartSlice.actions.incrementQuantity({
+            cartId: user.basket,
+            productId: product._id
+        }))
+    };
 
     const decrementHandle = (): void => {
-        if(cartProduct[0].quantity > 1) dispatch(cartSlice.actions.decrementQuantity(product._id))
-    }
+        dispatch(cartSlice.actions.decrementQuantity({
+            cartId: user.basket,
+            productId: product._id
+        }))
+    };
 
     return (
         <Card sx={{ maxWidth: 345 }}>
@@ -58,7 +72,6 @@ const ProductCard: FC<ProductCartProps> = ({ product }) => {
                     component="img"
                     height="140"
                     image="./src/assets/images/stock1.jpg"
-                    
                     alt=""
                 />
                 <CardContent>
@@ -68,34 +81,19 @@ const ProductCard: FC<ProductCartProps> = ({ product }) => {
                     <Typography variant="body2" color="text.secondary">
                         {product.description}
                     </Typography>
-                    <Typography>
-                        Цена: {product.price}₽
-                    </Typography>
+                    <Typography>Цена: {product.price}₽</Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button 
-                size="small" 
-                color={
-                    isBought ? 
-                    "warning" : 
-                    "primary"
-                }
-                variant="contained"
-                onClick={
-                    isBought ? 
-                    removeFromCartHandler :
-                    addToCartHandler
-                }
+                <Button
+                    size="small"
+                    color={isBought ? "warning" : "primary"}
+                    variant="contained"
+                    onClick={isBought ? removeFromCartHandler : addToCartHandler}
                 >
-                    {
-                        isBought ?
-                        "Удалить из корзины" :
-                        "Добавить в корзину"
-                    }
+                    {isBought ? "Удалить из корзины" : "Добавить в корзину"}
                 </Button>
-                {
-                    isBought && 
+                {isBought && (
                     <Box
                         sx={{
                             display: "flex",
@@ -103,24 +101,15 @@ const ProductCard: FC<ProductCartProps> = ({ product }) => {
                             marginLeft: "5px"
                         }}
                     >
-                        <Button
-                            onClick={decrementHandle}
-                            disabled={cartProduct[0].quantity === 1}
-                        >
-                            <Remove/>
+                        <Button onClick={decrementHandle} disabled={productInCart?.quantity === 1}>
+                            <Remove />
                         </Button>
-                        <Typography>
-                            {
-                            cartProduct[0].quantity
-                        }
-                        </Typography>
-                        <Button
-                            onClick={incrementHandle}
-                        >
-                            <Add/>
+                        <Typography>{productInCart?.quantity}</Typography>
+                        <Button onClick={incrementHandle} disabled={!canIncrement}>
+                            <Add />
                         </Button>
                     </Box>
-                }
+                )}
             </CardActions>
         </Card>
     );

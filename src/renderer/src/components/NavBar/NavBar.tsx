@@ -1,4 +1,4 @@
-import { FC, useState, MouseEvent } from "react";
+import { FC } from "react";
 
 import { useAppSelector } from "../../hooks/redux"
 
@@ -9,8 +9,6 @@ import { NavBarPoint } from "../NavBarPoint"
 import {
     AppBar,
     Box,
-    Menu, 
-    MenuItem,
     Container,
     IconButton,
 
@@ -55,7 +53,7 @@ const NavBar: FC<NavBarProps> = ({navPoints}) => {
                     </IconButton>
                 </Box>
                 {
-                    Boolean(authUser.role.includes(Roles.USER)) &&
+                    Boolean(authUser.roles.includes(Roles.USER)) &&
                     <NavBarPoint name={"Личный кабинет"} path={"/profile"}/>
 
                 }

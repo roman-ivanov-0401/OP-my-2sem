@@ -7,7 +7,8 @@ for(let i = 0; i < 50; i++){
         name: `Name ${i + 1}`,
         description: `Description ${i + 1}`,
         image: `path ${i + 1}`,
-        price: Math.round(Math.random() * 990 + 10)
+        price: Math.round(Math.random() * 990 + 10),
+        quantity: 3
     })
 }
 

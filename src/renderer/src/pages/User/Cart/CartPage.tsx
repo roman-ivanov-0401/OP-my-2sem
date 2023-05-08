@@ -12,11 +12,12 @@ import { ICartTableRow } from "./cartPage.types";
 import { ProdictId } from "@renderer/models/product";
 
 const CartPage: FC = () => {
-    const cart = useAppSelector(state => state.cartReducer.cart.products);
+    const user = useAppSelector(state => state.authReducer.user)
+    const cart = useAppSelector(state => state.cartReducer.carts.find(({ _id }) => _id == user.basket)?.products);
     const dispatch = useAppDispatch();
     const rows: ICartTableRow[] = [];
     let totalPrice = 0;
-    cart.forEach(({ product: { name, price, _id }, quantity }) => {
+    cart?.forEach(({ name, price, _id, quantity }) => {
         rows.push({
             name,
             price,
@@ -27,15 +28,24 @@ const CartPage: FC = () => {
     })
 
     const removeFromCartHandler = (_id: ProdictId): void => {
-        dispatch(cartSlice.actions.deleteProduct(_id));
+        dispatch(cartSlice.actions.deleteProductInCart({
+            cartId: user.basket,
+            productId: _id
+        }))
     }
 
     const incrementHandle = (_id: ProdictId): void => {
-        dispatch(cartSlice.actions.incrementQuantity(_id));
+        dispatch(cartSlice.actions.incrementQuantity({
+            cartId: user.basket,
+            productId: _id
+        }))
     }
 
     const decrementHandle = (_id: ProdictId): void => {
-        dispatch(cartSlice.actions.decrementQuantity(_id));
+        dispatch(cartSlice.actions.decrementQuantity({
+            cartId: user.basket,
+            productId: _id
+        }))
     }
 
     return(

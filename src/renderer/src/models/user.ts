@@ -8,8 +8,8 @@ export interface IUser{
     login: string,
     email: string,
     password: string,
-    role: Roles[],
-    predges: string,
+    roles: Roles[],
+    pledge: string,
     balance: number,
     basket: string
 }

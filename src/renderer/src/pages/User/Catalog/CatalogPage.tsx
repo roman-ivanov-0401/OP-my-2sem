@@ -4,17 +4,20 @@ import { Box, Container, OutlinedInput, Pagination, Typography } from "@mui/mate
 import { useAppSelector } from "../../../hooks/redux"
 
 import styles from "./catalog.module.scss"
- 
+import { productApi } from "@renderer/services/product.service";
+
 const CatalogPage: FC = () => {
     const numberOfProductsOnPage = 6;
     const [paginationNumber, setPaginationNumber] = useState<number>(1);
     const [searchPattern, setSearchPattern] = useState<string>("");
 
-    const handlePaginationChange = (event: ChangeEvent<unknown>, value: number): void => {
+    const handlePaginationChange = (_event: ChangeEvent<unknown>, value: number): void => {
         setPaginationNumber(value);
     };
 
-    let cart = useAppSelector(state => state.catalogReducer.products);
+    const { data } = productApi.useGetProductQuery("4")
+
+    let cart = useAppSelector(state => state.catalogReducer.products)
 
     const searchHandler = (event: ChangeEvent<HTMLInputElement>): void => {
         setSearchPattern(event.target.value);
@@ -29,7 +32,7 @@ const CatalogPage: FC = () => {
         <Typography
         variant="h1"
         >Каталог</Typography>
-        <Box 
+        <Box
         component="form"
         >
             <OutlinedInput
@@ -50,13 +53,18 @@ const CatalogPage: FC = () => {
            {
                 cart.slice((paginationNumber - 1) * numberOfProductsOnPage,
                     (paginationNumber - 1) * numberOfProductsOnPage + 6).map(
-                    product => 
+                    product =>
                     <ProductCard product={product} key={product._id}/>
                 )
            }
+
+           {
+            data &&  <ProductCard product={data}/>
+           }
+
         </Container>
         {
-            
+
         }
         <Box
             sx={{
@@ -65,14 +73,14 @@ const CatalogPage: FC = () => {
                 marginTop: "50px"
             }}
         >
-            <Pagination 
+            <Pagination
             count={Math.ceil(cart.length / numberOfProductsOnPage)}
             variant="outlined"
             color="primary"
             onChange={handlePaginationChange}
             />
         </Box>
-        
+
         </Container>
     );
 };
